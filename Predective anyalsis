@@ -1,0 +1,124 @@
+# 1. IMPORT LIBRARIES
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+    
+# 2. DATA COLLECTION
+
+df = pd.read_csv("spotify_data clean.csv")
+
+print("First 5 rows:\n", df.head())
+print("\nDataset Info:\n")
+print(df.info())
+
+# 3. DATA CLEANING
+
+df = df.drop_duplicates()
+df = df.dropna()
+
+df['album_release_date'] = pd.to_datetime(df['album_release_date'], errors='coerce')
+df = df.dropna(subset=['album_release_date'])
+
+df['release_month'] = df['album_release_date'].dt.month
+
+
+# 4. NUMPY OPERATIONS
+
+popularity_array = np.array(df['track_popularity'])
+
+print("\nAverage Popularity:", np.mean(popularity_array))
+print("Max Popularity:", np.max(popularity_array))
+print("Min Popularity:", np.min(popularity_array))
+
+
+# 5. DATA VISUALIZATION
+
+
+# Histogram
+plt.figure()
+plt.hist(df['track_popularity'], bins=30, color='purple')
+plt.title("Track Popularity Distribution")
+plt.xlabel("Popularity")
+plt.ylabel("Frequency")
+plt.show()
+
+# Scatter Plot
+plt.figure()
+plt.scatter(df['artist_popularity'], df['track_popularity'], color='green')
+plt.title("Artist Popularity vs Track Popularity")
+plt.xlabel("Artist Popularity")
+plt.ylabel("Track Popularity")
+plt.show()
+
+# Bar Graph
+month_avg = df.groupby('release_month')['track_popularity'].mean()
+
+plt.figure()
+month_avg.plot(kind='bar', color='skyblue')
+plt.title("Average Popularity by Release Month")
+plt.xlabel("Month")
+plt.ylabel("Popularity")
+plt.show()
+
+# Pie Chart (Average Popularity by Month)
+
+plt.figure()
+
+month_avg = df.groupby('release_month')['track_popularity'].mean()
+
+plt.pie(
+    month_avg,
+    labels=month_avg.index,
+    autopct='%1.1f%%',
+    startangle=90
+)
+
+plt.title("Popularity Share by Release Month")
+plt.show()
+
+
+# 6. EXPLORATORY DATA ANALYSIS (EDA)
+
+
+# Correlation Heatmap
+plt.figure(figsize=(8,5))
+sns.heatmap(
+    df[['artist_popularity','artist_followers','track_duration_min','track_popularity']].corr(),
+    annot=True,
+    cmap='coolwarm'
+)
+plt.title("Correlation Heatmap")
+plt.show()
+
+# Outlier Detection
+plt.figure()
+sns.boxplot(y=df['track_popularity'], color='orange')
+plt.title("Outlier Detection in Popularity")
+plt.show()
+
+
+# 7. STATISTICAL ANALYSIS
+
+print("\nStatistical Measures:")
+print("Mean:", df['track_popularity'].mean())
+print("Median:", df['track_popularity'].median())
+print("Standard Deviation:", df['track_popularity'].std())
+
+# 8. LINEAR REGRESSION
+
+X = df[['artist_popularity', 'artist_followers']]
+y = df['track_popularity']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+y_pred = model.predict(X_test)
+
+print("\nLinear Regression Completed")
