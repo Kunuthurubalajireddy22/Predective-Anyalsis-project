@@ -151,8 +151,12 @@ The resulting insights help educators, developers, and health professionals spot
 👨‍💻 Author
 
 Name: Kunuthuru Balaji Reddy
+
+
 Course: Computer Science and Engineering
+
 Project Domain: Data Science and Machine Learning
+
 Now that your documentation perfectly matches your social media impact code, would you like to:
 • Write a brief summary explaining how to interpret the 06_correlation_heatmap.png file?
 • Generate a template script to help deploy this model into a web framework like Streamlit for future use?
